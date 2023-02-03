@@ -265,6 +265,7 @@ async function auth() {
   const sess = await session.launch({
     headless: program.headless,
     args: ['--no-sandbox'],
+    devtools: true
   });
 
   try {

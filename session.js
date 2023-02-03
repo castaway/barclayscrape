@@ -53,7 +53,8 @@ class Session {
   async ensureLoggedIn() {
     // Check that we're looking at the logged in homepage and throw an
     // error if we aren't.
-    await u.wait(this.page, '.accounts-body');
+    // await u.wait(this.page, '.accounts-body');
+    await u.wait(this.page, 'div.c-section.c-section--primary');
     this.logged_in = true;
   }
 
@@ -145,13 +146,14 @@ class Session {
   }
 
   async accounts() {
-    let accData = await this.page.$$eval('.o-account-list__item', accounts => {
+//    let accData = await this.page.$$eval('.o-account-list__item', accounts => {
+    let accData = await this.page.$$eval('.c-account__content', accounts => {
       return accounts.map(acc => {
         return [
-          acc.querySelector('.my-account-link').getAttribute('href'),
-          acc.querySelector('.o-account').getAttribute('id').replace(/[^0-9]/g, ''),
-          acc.querySelector('.my-account-link').textContent.trim(),
-          acc.querySelector('.o-account__balance-head') !== null ? acc.querySelector('.o-account__balance-head').textContent.trim().replace(/[£$€]/g, '') : ''
+          acc.querySelector('.c-account__body a').getAttribute('href'),
+          Array.from(acc.querySelectorAll('.c-account__detail--multi span')).map((span) => span.textContent.replace(/[^0-9]/g, '')).join(''),
+          acc.querySelector('.c-account__body a').textContent.trim(),
+          acc.querySelector('.c-account__balance') !== null ? acc.querySelector('[description="Available balance"]').textContent.trim().replace(/[^0-9]/g, '') : ''
         ]
       });
     });
@@ -176,7 +178,8 @@ class Session {
 
   async home() {
     await u.click(this.page, '[aria-label="Home"]');
-    await u.wait(this.page, '.accounts-body');
+    // await u.wait(this.page, '.accounts-body');
+    await u.wait(this.page, 'div.c-section.c-section--primary');
   }
 }
 
